@@ -37,9 +37,9 @@ Set key binding to switch between list and tree modes in `keymap.toml`:
 [manager]
 prepend_keymap = [
   { on = [ "E" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
-  { on = [ "-" ], run = "plugin eza-preview --args='inc-level'", desc = "Increment tree level" },
-  { on = [ "_" ], run = "plugin eza-preview --args='dec-level'", desc = "Decrement tree level" },
-  { on = [ "$" ], run = "plugin eza-preview --args='toggle-follow-symlinks'", desc = "Toggle tree follow symlinks" },
+  { on = [ "-" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },
+  { on = [ "_" ], run = "plugin eza-preview --args='--dec-level'", desc = "Decrement tree level" },
+  { on = [ "$" ], run = "plugin eza-preview --args='--toggle-follow-symlinks'", desc = "Toggle tree follow symlinks" },
 ]
 ```
 
