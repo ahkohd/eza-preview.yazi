@@ -51,7 +51,7 @@ require("eza-preview"):setup({
   level = 3,
 
   -- Whether to follow symlinks when previewing directories (default: false)
-  follow_symlinks = false
+  follow_symlinks = false,
 
   -- Whether to show target file info instead of symlink info (default: false)
   dereference = false
