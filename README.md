@@ -10,7 +10,7 @@ Tree mode:
 
 ## Requirements
 
-- [yazi (0.4+) or nightly](https://github.com/sxyazi/yazi)
+- [yazi (25.2.7+) or nightly](https://github.com/sxyazi/yazi)
 - [eza (0.20+)](https://github.com/eza-community/eza)
 
 ## Installation
@@ -18,12 +18,12 @@ Tree mode:
 ### Linux/MacOS
 
 ```sh
-ya pack -a ahkohd/eza-preview
+ya pack -a wanstarge/eza-preview
 ```
 
 ## Usage
 
-Add `eza-preview` to previewers in `yazi.toml`:
+Add `eza-preview` to previewers in `yazi.toml` !!!:
 
 ```toml
 [[plugin.prepend_previewers]]
@@ -37,9 +37,9 @@ Set key binding to switch between list and tree modes in `keymap.toml`:
 [manager]
 prepend_keymap = [
   { on = [ "E" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
-  { on = [ "-" ], run = "plugin eza-preview --args='--inc-level'", desc = "Increment tree level" },
-  { on = [ "_" ], run = "plugin eza-preview --args='--dec-level'", desc = "Decrement tree level" },
-  { on = [ "$" ], run = "plugin eza-preview --args='--toggle-follow-symlinks'", desc = "Toggle tree follow symlinks" },
+  { on = [ "-" ], run = "plugin eza-preview inc-level", desc = "Increment tree level" },
+  { on = [ "_" ], run = "plugin eza-preview dec-level", desc = "Decrement tree level" },
+  { on = [ "$" ], run = "plugin eza-preview toggle-follow-symlinks", desc = "Toggle tree follow symlinks" },
 ]
 ```
 
