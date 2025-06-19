@@ -52,6 +52,9 @@ Configure the plugin in `init.lua`:
 
 ```lua
 require("eza-preview"):setup({
+  -- Set the tree preview to be default (default: true)
+  default_tree = true,
+
   -- Directory depth level for tree preview (default: 3)
   level = 3,
 
