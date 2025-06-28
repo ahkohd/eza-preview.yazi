@@ -111,6 +111,11 @@ function M:peek(job)
 		end
 
 		if opts.git_status then
+			table.insert(args, "--long")
+			table.insert(args, "--no-permissions")
+			table.insert(args, "--no-user")
+			table.insert(args, "--no-time")
+			table.insert(args, "--no-filesize")
 			table.insert(args, "--git")
 			table.insert(args, "--git-repos")
 		end
