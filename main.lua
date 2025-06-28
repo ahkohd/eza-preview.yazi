@@ -118,6 +118,7 @@ function M:peek(job)
 			table.insert(args, "--no-filesize")
 			table.insert(args, "--git")
 			table.insert(args, "--git-repos")
+			table.insert(args, "--ignore-glob=.git")
 		end
 		if opts.git_ignore then
 			table.insert(args, "--git-ignore")
