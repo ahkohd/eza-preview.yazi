@@ -18,7 +18,7 @@ end)
 
 local set_opts = ya.sync(function(state, opts)
 	if state.opts == nil then
-		state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true }
+		state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true, git_status = true, git_ignore = true }
 	end
 
 	for key, value in pairs(opts or {}) do
@@ -46,6 +46,14 @@ end)
 
 local toggle_hidden = ya.sync(function(state)
 	state.opts.all = not state.opts.all
+end)
+
+local toggle_git_status = ya.sync(function(state)
+	state.opts.git_status = not state.opts.git_status
+end)
+
+local toggle_git_ignore = ya.sync(function(state)
+	state.opts.git_ignore = not state.opts.git_ignore
 end)
 
 function M:setup(opts)
@@ -100,6 +108,14 @@ function M:peek(job)
 
 		if opts.dereference then
 			table.insert(args, "--dereference")
+		end
+
+		if opts.git_status then
+			table.insert(args, "--git")
+			table.insert(args, "--git-repos")
+		end
+		if opts.git_ignore then
+			table.insert(args, "--git-ignore")
 		end
 	end
 
