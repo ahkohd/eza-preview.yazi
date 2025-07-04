@@ -18,7 +18,7 @@ end)
 
 local set_opts = ya.sync(function(state, opts)
 	if state.opts == nil then
-		state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true, git_status = true, git_ignore = true }
+		state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true, git_status = false, git_ignore = false }
 	end
 
 	for key, value in pairs(opts or {}) do
