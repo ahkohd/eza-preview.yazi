@@ -145,11 +145,11 @@ function M:peek(job)
 			upper_bound = "",
 		})
 	elseif empty_output then
-		ya.preview_widgets(job, {
+		ya.preview_widget(job, {
 			ui.Text({ ui.Line("No items") }):area(job.area):align(ui.Text.CENTER),
 		})
 	else
-		ya.preview_widgets(job, {
+		ya.preview_widget(job, {
 			ui.Text.parse(lines):area(job.area),
 		})
 	end
