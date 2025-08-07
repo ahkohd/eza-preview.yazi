@@ -8,7 +8,7 @@ local function get_or_init_state(state)
 	if state.initialized then
 		return
 	end
-	state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true }
+	state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true, ignore_glob = {} }
 	state.tree = true
 	state.initialized = true
 end
@@ -110,6 +110,14 @@ function M:peek(job)
 		end
 		if opts.dereference then
 			table.insert(args, "--dereference")
+		end
+		if opts.ignore_glob and type(opts.ignore_glob) == "table" and #opts.ignore_glob > 0 then
+			local pattern_str = table.concat(opts.ignore_glob, "|")
+			table.insert(args, "-I")
+			table.insert(args, pattern_str)
+		elseif opts.ignore_glob and type(opts.ignore_glob) == "string" and opts.ignore_glob ~= "" then
+			table.insert(args, "-I")
+			table.insert(args, opts.ignore_glob)
 		end
 	end
 	local child = Command("eza"):arg(args):stdout(Command.PIPED):stderr(Command.PIPED):spawn()
