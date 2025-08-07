@@ -68,10 +68,10 @@ require("eza-preview"):setup({
   all = true,
 
   -- Ignore files matching patterns (default: {})
-  -- Can be a string or array of strings
-  ignore_glob = { "*.tmp", "node_modules", ".DS_Store" }
-  -- or
   -- ignore_glob = "*.log"
+  -- ignore_glob = { "*.tmp", "node_modules", ".git", ".DS_Store" }
+  -- SEE: https://www.linuxjournal.com/content/pattern-matching-bash to learn about glob patterns
+  ignore_glob = {}
 })
 
 -- Or use default settings
@@ -85,43 +85,6 @@ require("eza-preview"):setup({})
 - `plugin eza-preview dec-level` - Decrease tree depth level  
 - `plugin eza-preview toggle-follow-symlinks` - Toggle symlink following
 - `plugin eza-preview toggle-hidden` - Toggle hidden file visibility
-
-## Configuration Options
-
-### ignore_glob
-
-The `ignore_glob` option allows you to exclude specific files or patterns from the directory preview using glob patterns.
-
-**Examples:**
-
-```lua
--- Single pattern
-ignore_glob = ".DS_Store"
-
--- Multiple patterns
-ignore_glob = { ".DS_Store", "*.tmp", "node_modules" }
-
--- Wildcard patterns
-ignore_glob = { "*.log", "*.bak", "temp*" }
-
--- Directory patterns
-ignore_glob = { "node_modules", ".git", ".svn" }
-
--- Mixed patterns
-ignore_glob = { ".DS_Store", "*.tmp", "node_modules", "*.pyc" }
-```
-
-**Supported glob patterns:**
-- `*` - Matches any characters
-- `?` - Matches any single character  
-- `[abc]` - Matches any character in brackets
-- Literal strings for exact matches
-
-**Common use cases:**
-- Hide system files: `{ ".DS_Store", "Thumbs.db" }`
-- Hide temporary files: `{ "*.tmp", "*.temp", "*~" }`
-- Hide build artifacts: `{ "node_modules", "target", "build", "dist" }`
-- Hide version control: `{ ".git", ".svn", ".hg" }`
 
 ## Contributing
 
