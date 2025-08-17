@@ -1,3 +1,5 @@
+--- @since 25.5.31
+
 local M = {}
 
 local function fail(s, ...)
