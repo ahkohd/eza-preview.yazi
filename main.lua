@@ -8,7 +8,15 @@ local function get_or_init_state(state)
 	if state.initialized then
 		return
 	end
-	state.opts = { level = 3, follow_symlinks = false, dereference = false, all = true, ignore_glob = {} }
+	state.opts = {
+		level = 3,
+		follow_symlinks = false,
+		dereference = false,
+		all = true,
+		ignore_glob = {},
+		git_ignore = true,
+		git_status = false,
+	}
 	state.tree = true
 	state.initialized = true
 end
@@ -110,6 +118,18 @@ function M:peek(job)
 		end
 		if opts.dereference then
 			table.insert(args, "--dereference")
+		end
+		if opts.git_status then
+			table.insert(args, "--long")
+			table.insert(args, "--no-permissions")
+			table.insert(args, "--no-user")
+			table.insert(args, "--no-time")
+			table.insert(args, "--no-filesize")
+			table.insert(args, "--git")
+			table.insert(args, "--git-repos")
+		end
+		if opts.git_ignore then
+			table.insert(args, "--git-ignore")
 		end
 		if opts.ignore_glob and type(opts.ignore_glob) == "table" and #opts.ignore_glob > 0 then
 			local pattern_str = table.concat(opts.ignore_glob, "|")

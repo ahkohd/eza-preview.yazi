@@ -71,7 +71,13 @@ require("eza-preview"):setup({
   -- ignore_glob = "*.log"
   -- ignore_glob = { "*.tmp", "node_modules", ".git", ".DS_Store" }
   -- SEE: https://www.linuxjournal.com/content/pattern-matching-bash to learn about glob patterns
-  ignore_glob = {}
+  ignore_glob = {},
+
+  -- Ignore files mentioned in '.gitignore'  (default: true)
+  git_ignore = true,
+
+  -- Show git status (default: false)
+  git_status = false
 })
 
 -- Or use default settings
