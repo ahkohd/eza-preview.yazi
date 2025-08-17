@@ -79,6 +79,18 @@ local toggle_hidden = ya.sync(function(state)
 	ya.manager_emit("refresh", {})
 end)
 
+local toggle_git_ignore = ya.sync(function(state)
+	get_or_init_state(state)
+	state.opts.git_ignore = not state.opts.git_ignore
+	ya.manager_emit("refresh", {})
+end)
+
+local toggle_git_status = ya.sync(function(state)
+	get_or_init_state(state)
+	state.opts.git_status = not state.opts.git_status
+	ya.manager_emit("refresh", {})
+end)
+
 function M:entry(job)
 	local args = string.gsub(job.args[1] or "", "^%s*(.-)%s*$", "%1")
 	if args == "inc-level" then
@@ -89,6 +101,10 @@ function M:entry(job)
 		toggle_follow_symlinks()
 	elseif args == "toggle-hidden" then
 		toggle_hidden()
+	elseif args == "toggle-git-ignore" then
+		toggle_git_ignore()
+	elseif args == "toggle-git-status" then
+		toggle_git_status()
 	else
 		toggle_view_mode()
 	end

@@ -38,11 +38,13 @@ Set key bindings to control the preview in `keymap.toml`:
 ```toml
 [mgr]
 prepend_keymap = [
-  { on = [ "E" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
-  { on = [ "-" ], run = "plugin eza-preview inc-level", desc = "Increment tree level" },
-  { on = [ "_" ], run = "plugin eza-preview dec-level", desc = "Decrement tree level" },
-  { on = [ "$" ], run = "plugin eza-preview toggle-follow-symlinks", desc = "Toggle tree follow symlinks" },
-  { on = [ "*" ], run = "plugin eza-preview toggle-hidden", desc = "Toggle hidden files" },
+  { on = [ "e", "t" ], run = "plugin eza-preview",  desc = "Toggle tree/list dir preview" },
+  { on = [ "e", "-" ], run = "plugin eza-preview inc-level", desc = "Increment tree level" },
+  { on = [ "e", "_" ], run = "plugin eza-preview dec-level", desc = "Decrement tree level" },
+  { on = [ "e", "$" ], run = "plugin eza-preview toggle-follow-symlinks", desc = "Toggle tree follow symlinks" },
+  { on = [ "e", "*" ], run = "plugin eza-preview toggle-hidden", desc = "Toggle hidden files" },
+  { on = [ "e", "g", "i" ], run = "plugin eza-preview toggle-git-ignore", desc = "Toggle .gitignore files" },
+  { on = [ "e", "g", "s" ], run = "plugin eza-preview toggle-git-status", desc = "Toggle showing git status" },
 ]
 ```
 
