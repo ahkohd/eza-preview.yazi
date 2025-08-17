@@ -93,6 +93,8 @@ require("eza-preview"):setup({})
 - `plugin eza-preview dec-level` - Decrease tree depth level  
 - `plugin eza-preview toggle-follow-symlinks` - Toggle symlink following
 - `plugin eza-preview toggle-hidden` - Toggle hidden file visibility
+- `plugin eza-preview toggle-git-ignore` - Toggle ignore files mentioned in '.gitignore'
+- `plugin eza-preview toggle-git-status` - Toggle showing git status
 
 ## Contributing
 
