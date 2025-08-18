@@ -12,7 +12,7 @@ local function get_or_init_state(state)
 	end
 	state.opts = {
 		level = 3,
-		follow_symlinks = false,
+		follow_symlinks = true,
 		dereference = false,
 		all = true,
 		ignore_glob = {},
