@@ -27,7 +27,7 @@ Add `eza-preview` to previewers in `yazi.toml`:
 
 ```toml
 [[plugin.prepend_previewers]]
-name = "*/"
+url = "*/"
 run = "eza-preview"
 ```
 
