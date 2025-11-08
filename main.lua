@@ -18,6 +18,7 @@ local function get_or_init_state(state)
 		ignore_glob = {},
 		git_ignore = true,
 		git_status = false,
+		icons = true,
 	}
 	state.tree = true
 	state.initialized = true
@@ -118,7 +119,6 @@ function M:peek(job)
 	local is_tree = is_tree_view_mode()
 	local args = {
 		"--color=always",
-		"--icons=always",
 		"--group-directories-first",
 		"--no-quotes",
 		tostring(job.file.url),
@@ -128,6 +128,9 @@ function M:peek(job)
 		table.insert(args, string.format("--level=%d", opts.level))
 	end
 	if opts then
+		if opts.icons then
+			table.insert(args, "--icons=always")
+		end
 		if opts.follow_symlinks then
 			table.insert(args, "--follow-symlinks")
 		end

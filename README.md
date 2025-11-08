@@ -60,13 +60,16 @@ require("eza-preview"):setup({
   -- Directory depth level for tree preview (default: 3)
   level = 3,
 
+  -- Show file icons
+  icons = true,
+
   -- Follow symlinks when previewing directories (default: true)
   follow_symlinks = true,
 
   -- Show target file info instead of symlink info (default: false)
   dereference = false,
 
-  -- Show hidden files (default: true) 
+  -- Show hidden files (default: true)
   all = true,
 
   -- Ignore files matching patterns (default: {})
@@ -90,7 +93,7 @@ require("eza-preview"):setup({})
 
 - `plugin eza-preview` - Toggle between tree and list modes
 - `plugin eza-preview inc-level` - Increase tree depth level
-- `plugin eza-preview dec-level` - Decrease tree depth level  
+- `plugin eza-preview dec-level` - Decrease tree depth level
 - `plugin eza-preview toggle-follow-symlinks` - Toggle symlink following
 - `plugin eza-preview toggle-hidden` - Toggle hidden file visibility
 - `plugin eza-preview toggle-git-ignore` - Toggle ignore files mentioned in '.gitignore'
