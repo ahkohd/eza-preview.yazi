@@ -2,16 +2,26 @@
 
 local M = {}
 
--- Sync getters - return simple values only (tables cause poll errors)
+-- Batch getter - returns multiple simple values (avoids multiple sync boundary crossings)
+local get_all_opts = ya.sync(function(st)
+	return st.tree ~= false,
+		st.level or 3,
+		st.follow_symlinks ~= false,
+		st.dereference == true,
+		st.all ~= false,
+		st.git_ignore ~= false,
+		st.git_status == true,
+		st.icons ~= false,
+		st.ignore_glob or ""
+end)
+
+-- Individual getters for entry point (need current value before toggling)
 local get_tree = ya.sync(function(st) return st.tree ~= false end)
 local get_level = ya.sync(function(st) return st.level or 3 end)
 local get_follow_symlinks = ya.sync(function(st) return st.follow_symlinks ~= false end)
-local get_dereference = ya.sync(function(st) return st.dereference == true end)
 local get_all = ya.sync(function(st) return st.all ~= false end)
 local get_git_ignore = ya.sync(function(st) return st.git_ignore ~= false end)
 local get_git_status = ya.sync(function(st) return st.git_status == true end)
-local get_icons = ya.sync(function(st) return st.icons ~= false end)
-local get_ignore_glob = ya.sync(function(st) return st.ignore_glob or "" end)
 
 -- Sync setters (also trigger preview refresh)
 local set_tree = ya.sync(function(st, val)
@@ -90,15 +100,8 @@ function M:entry(job)
 end
 
 function M:peek(job)
-	local is_tree = get_tree()
-	local level = get_level()
-	local follow_symlinks = get_follow_symlinks()
-	local dereference = get_dereference()
-	local all = get_all()
-	local git_ignore = get_git_ignore()
-	local git_status = get_git_status()
-	local icons = get_icons()
-	local ignore_glob = get_ignore_glob()
+	-- Single sync call to get all options (avoids 9 separate boundary crossings)
+	local is_tree, level, follow_symlinks, dereference, all, git_ignore, git_status, icons, ignore_glob = get_all_opts()
 
 	local args = {
 		"--color=always",
@@ -146,36 +149,31 @@ function M:peek(job)
 
 	local limit = job.area.h
 	local lines = ""
-	local num_lines = 1
-	local num_skip = 0
-	local empty_output = false
+	local line_count = 0
+	local skipped = 0
 
 	repeat
 		local line, event = child:read_line()
 		if event == 1 then
-			ya.notify({ title = "Eza Preview", content = "stderr: " .. tostring(line), timeout = 5, level = "error" })
+			-- stderr, skip
 		elseif event ~= 0 then
 			break
-		end
-		if num_skip >= job.skip then
-			lines = lines .. line
-			num_lines = num_lines + 1
+		elseif skipped < job.skip then
+			skipped = skipped + 1
 		else
-			num_skip = num_skip + 1
+			lines = lines .. line
+			line_count = line_count + 1
 		end
-	until num_lines >= limit
-
-	if num_lines == 1 and not is_tree then
-		empty_output = true
-	elseif num_lines == 2 and is_tree then
-		empty_output = true
-	end
+	until line_count >= limit
 
 	child:start_kill()
 
-	if job.skip > 0 and num_lines < limit then
+	-- tree mode outputs dir name as first line, so empty = 1 line; list mode empty = 0 lines
+	local empty_output = (is_tree and line_count <= 1) or (not is_tree and line_count == 0)
+
+	if job.skip > 0 and line_count < limit then
 		ya.emit("peek", {
-			math.max(0, job.skip - (limit - num_lines)),
+			math.max(0, job.skip - (limit - line_count)),
 			only_if = job.file.url,
 			upper_bound = true,
 		})
