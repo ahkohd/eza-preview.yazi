@@ -1,96 +1,70 @@
---- @since 25.5.31
+--- @since 25.12.29
 
 local M = {}
 
+-- Module-level state (avoids ya.sync polling issues in async peek context)
+M._opts = {
+	level = 3,
+	follow_symlinks = true,
+	dereference = false,
+	all = true,
+	ignore_glob = {},
+	git_ignore = true,
+	git_status = false,
+	icons = true,
+}
+M._tree = true
+
 local function fail(s, ...)
-	ya.err({ title = "Eza Preview", content = string.format(s, ...), timeout = 5 })
+	ya.notify({ title = "Eza Preview", content = string.format(s, ...), timeout = 5, level = "error" })
 end
 
-local function get_or_init_state(state)
-	if state.initialized then
-		return
-	end
-	state.opts = {
-		level = 3,
-		follow_symlinks = true,
-		dereference = false,
-		all = true,
-		ignore_glob = {},
-		git_ignore = true,
-		git_status = false,
-		icons = true,
-	}
-	state.tree = true
-	state.initialized = true
-end
-
-local apply_config = ya.sync(function(state, user_config)
-	get_or_init_state(state)
+function M:setup(user_config)
 	user_config = user_config or {}
 	for key, value in pairs(user_config) do
 		if key == "default_tree" then
-			state.tree = value
-		elseif state.opts[key] ~= nil then
-			state.opts[key] = value
+			M._tree = value
+		elseif M._opts[key] ~= nil then
+			M._opts[key] = value
 		end
 	end
-end)
-
-function M:setup(user_config)
-	apply_config(user_config)
 end
 
-local is_tree_view_mode = ya.sync(function(state, _)
-	get_or_init_state(state)
-	return state.tree
-end)
-
-local get_opts = ya.sync(function(state)
-	get_or_init_state(state)
-	return state.opts
-end)
-
-local toggle_view_mode = ya.sync(function(state, _)
-	get_or_init_state(state)
-	state.tree = not state.tree
+-- Sync blocks for entry point mutations only (not called from async peek)
+local toggle_view_mode = ya.sync(function()
+	M._tree = not M._tree
 	ya.manager_emit("refresh", {})
 end)
 
-local inc_level = ya.sync(function(state)
-	get_or_init_state(state)
-	state.opts.level = state.opts.level + 1
+local inc_level = ya.sync(function()
+	M._opts.level = M._opts.level + 1
 	ya.manager_emit("refresh", {})
 end)
 
-local dec_level = ya.sync(function(state)
-	get_or_init_state(state)
-	if state.opts.level > 1 then
-		state.opts.level = state.opts.level - 1
+local dec_level = ya.sync(function()
+	if M._opts.level > 1 then
+		M._opts.level = M._opts.level - 1
 		ya.manager_emit("refresh", {})
 	end
 end)
 
-local toggle_follow_symlinks = ya.sync(function(state)
-	get_or_init_state(state)
-	state.opts.follow_symlinks = not state.opts.follow_symlinks
+local toggle_follow_symlinks = ya.sync(function()
+	M._opts.follow_symlinks = not M._opts.follow_symlinks
 	ya.manager_emit("refresh", {})
 end)
 
-local toggle_hidden = ya.sync(function(state)
-	get_or_init_state(state)
-	state.opts.all = not state.opts.all
+local toggle_hidden = ya.sync(function()
+	M._opts.all = not M._opts.all
 	ya.manager_emit("refresh", {})
 end)
 
-local toggle_git_ignore = ya.sync(function(state)
-	get_or_init_state(state)
-	state.opts.git_ignore = not state.opts.git_ignore
+local toggle_git_ignore = ya.sync(function()
+	M._opts.git_ignore = not M._opts.git_ignore
 	ya.manager_emit("refresh", {})
 end)
 
-local toggle_git_status = ya.sync(function(state)
-	get_or_init_state(state)
-	state.opts.git_status = not state.opts.git_status
+local toggle_git_status = ya.sync(function()
+	M._opts.git_status = not M._opts.git_status
 	ya.manager_emit("refresh", {})
 end)
 
@@ -115,8 +89,9 @@ function M:entry(job)
 end
 
 function M:peek(job)
-	local opts = get_opts()
-	local is_tree = is_tree_view_mode()
+	-- Access module-level state directly (no ya.sync call from async context)
+	local opts = M._opts
+	local is_tree = M._tree
 	local args = {
 		"--color=always",
 		"--group-directories-first",
@@ -161,7 +136,10 @@ function M:peek(job)
 			table.insert(args, opts.ignore_glob)
 		end
 	end
-	local child = Command("eza"):arg(args):stdout(Command.PIPED):stderr(Command.PIPED):spawn()
+	local child, err = Command("eza"):arg(args):stdout(Command.PIPED):stderr(Command.PIPED):spawn()
+	if not child then
+		return ya.preview_widget(job, ui.Text("eza: " .. (err or "spawn failed")):area(job.area))
+	end
 	local limit = job.area.h
 	local lines = ""
 	local num_lines = 1
@@ -181,9 +159,9 @@ function M:peek(job)
 			num_skip = num_skip + 1
 		end
 	until num_lines >= limit
-	if num_lines == 1 and not is_tree_view_mode() then
+	if num_lines == 1 and not is_tree then
 		empty_output = true
-	elseif num_lines == 2 and is_tree_view_mode() then
+	elseif num_lines == 2 and is_tree then
 		empty_output = true
 	end
 	child:start_kill()
