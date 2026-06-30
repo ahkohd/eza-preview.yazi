@@ -16,7 +16,7 @@ Tree mode:
 ## Installation
 
 ```sh
-ya pack -a ahkohd/eza-preview
+ya pkg add ahkohd/eza-preview
 ```
 
 ## Usage
